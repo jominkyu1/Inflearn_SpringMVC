@@ -22,7 +22,6 @@ public class LogTestController {
         log.warn("warn log={}", name);
         log.error("error log={}", name);
 
-
         return "ok";
     }
 }

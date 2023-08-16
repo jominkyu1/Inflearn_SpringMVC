@@ -2,9 +2,11 @@ package spring.springmvc.basic.request;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import spring.springmvc.basic.HelloData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -100,4 +102,39 @@ public class RequestParamController {
 
         return "OK! Map";
     }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-classic")
+    public String modelAttributeClassic(@RequestParam String username, @RequestParam int age) {
+        HelloData helloData = new HelloData();
+        helloData.setUsername(username);
+        helloData.setAge(age);
+
+        log.info(helloData.toString()); //Lombok에 의해 override된 toString 호출 (선언된 멤버변수 출력)
+
+        return "OK! Attribute Classic";
+    }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-v1")
+    public String modelAttributeV1(@ModelAttribute HelloData helloData) {
+        //HelloData 객체 프로퍼티(멤버변수)의 setter를 호출해서 파타미러값을 입력(바인딩)함.
+        //ex) 파라미터 이름이 username이면 setUsername() 메서드를 찾아서 호출함.
+
+        log.info(helloData.toString());
+        return "OK! Attribute V1";
+    }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-v2")
+    public String modelAttributeV2(HelloData helloData) { //@ModelAttribute도 생략가능
+        log.info(helloData.toString());
+        return "OK! Attribute V2";
+    }
+
+    /*
+    *   스프링은 @RequestParam과 @ModelAttribute 모두 생략이 가능하다.
+    *   생략시 String, int, Integer같은 단순타입은 @RequestParam으로 인식
+    *   나머지는 @ModelAttribute로 인식. (단, argument resolver로 지정해둔 타입은 예외) 
+    * */
 }
